@@ -34,8 +34,11 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: >
-          mvn -B sonar:sonar
+          mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:4.0.0.4121:sonar
+          -Dsonar.projectKey=SkyEmission_ousl-cloud-devsecops
+          -Dsonar.organization=skyemission
           -Dsonar.host.url=https://sonarcloud.io
+          -Dsonar.token=${{ secrets.SONAR_TOKEN }}
           -Dsonar.qualitygate.wait=true
 
       - name: Configure AWS Credentials
@@ -60,7 +63,7 @@ jobs:
           echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
       - name: Run Trivy Vulnerability Scanner
-        uses: aquasecurity/trivy-action@v0.36.0
+        uses: aquasecurity/trivy-action@0.28.0
         with:
           image-ref: ${{ steps.build-image.outputs.image }}
           format: 'table'
